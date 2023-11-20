@@ -1,13 +1,13 @@
 'use client'
-import api from "../../api"
+import { getClientSession } from "@/functions/getClientSession/getClientSession"
 
 const Dashboard = () => {
 
   const handleSubmit = async () => {
 
-    const { data } = await api.get('/auth/session')
-    console.log(data)
-    alert(JSON.stringify(data))
+    const { user } = await getClientSession()
+
+    alert(JSON.stringify(user))
   }
 
   return (

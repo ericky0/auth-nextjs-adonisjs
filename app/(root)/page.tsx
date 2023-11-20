@@ -1,31 +1,46 @@
 'use client'
 
+import { getClientSession } from "@/functions/getClientSession/getClientSession"
+import api from "@/services/api"
 import { AxiosError } from "axios"
-import api from "./api"
 import { useRouter } from "next/navigation"
+import { useEffect, useState } from "react"
 
 export default function Home() {
 
   const router = useRouter()
+  const [isSuccess, setIsSuccess] = useState(false)
+
+  useEffect(() => {
+    (async () => {
+      const { user } = await getClientSession()
+      if (user) {
+        router.push('/dashboard')
+        setIsSuccess(true)
+      }
+    })()
+  }, [router])
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    
     event.preventDefault()
-
-
     try {
-      const { data } = await api.post('/auth', {
+      const response = await api.post('/auth', {
         email: event.currentTarget.email.value,
         password: event.currentTarget.password.value
+
+      }).then((result) => {
+
+        alert(JSON.stringify(result))
+        router.push('/dashboard')
       })
-      console.log(data)
-      alert(JSON.stringify(data))
-      router.push('/dashboard')
     } catch (e) {
       const error = e as AxiosError
-
       alert (error.message)
     }
+  }
+
+  if (isSuccess === true) { 
+    return <div>user already authenticated</div>
   }
 
   return (

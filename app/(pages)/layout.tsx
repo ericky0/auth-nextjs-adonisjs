@@ -1,15 +1,10 @@
 'use client'
 
 import { useEffect } from "react"
-import api from "../api"
-import { AxiosError } from "axios"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
-
-interface UserResponse {
-  user: any
-  error: AxiosError | null
-}
+import { getClientSession } from "@/functions/getClientSession/getClientSession"
+import api from "@/services/api"
 
 const DashboardLayout = ({  children }: { children: React.ReactNode }) => {
 
@@ -17,8 +12,10 @@ const DashboardLayout = ({  children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     (async () => {
-      const { error } = await getSession()
+      const { error } = await getClientSession()
+
       console.log(error?.message)
+
       if (error) {
         router.push('/')
         return
@@ -39,25 +36,6 @@ const DashboardLayout = ({  children }: { children: React.ReactNode }) => {
       {children}
     </div>
   )
-}
-
-async function getSession(): Promise<UserResponse> {
-  try {
-    const { data } = (await api.get('/auth/session'))
-
-    return {
-      user: data,
-      error: null,
-    }
-    
-  } catch (e) {
-    const error = e as AxiosError
-
-    return {
-      user: null,
-      error
-    }
-  }
 }
 
 async function signOut() {
