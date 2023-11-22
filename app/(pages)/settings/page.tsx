@@ -1,18 +1,16 @@
 import { getServerSession } from "@/functions/getServerSession/getServerSession"
-import { AxiosError } from "axios"
-import { cookies, headers } from "next/headers"
-
 
 const Settings = async () => {
-  const { user, error } = await getServerSession()
-  console.log(user, error?.response?.data)
+  
+  const response = await getServerSession()
+  console.log(response)
   
   return (
     <div>
       <div>super secret settings</div>
 
-      <p>name: {user?.name}</p>
-      <p>email: {user?.email}</p>
+      <p>name: {response.user?.name}</p>
+      <p>email: {response.user?.email}</p>
     </div>
   )
 }

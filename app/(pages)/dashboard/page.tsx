@@ -4,9 +4,7 @@ import { getClientSession } from "@/functions/getClientSession/getClientSession"
 const Dashboard = () => {
 
   const handleSubmit = async () => {
-
     const { user } = await getClientSession()
-
     alert(JSON.stringify(user))
   }
 

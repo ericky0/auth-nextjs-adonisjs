@@ -4,19 +4,17 @@ import { getClientSession } from "@/functions/getClientSession/getClientSession"
 import api from "@/services/api"
 import { AxiosError } from "axios"
 import { useRouter } from "next/navigation"
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 
 export default function Home() {
 
   const router = useRouter()
-  const [isSuccess, setIsSuccess] = useState(false)
 
   useEffect(() => {
     (async () => {
       const { user } = await getClientSession()
       if (user) {
         router.push('/dashboard')
-        setIsSuccess(true)
       }
     })()
   }, [router])
@@ -24,23 +22,17 @@ export default function Home() {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     try {
-      const response = await api.post('/auth', {
+      const res = await api.post('/auth', {
         email: event.currentTarget.email.value,
-        password: event.currentTarget.password.value
+        password: event.currentTarget.password.value 
+      })  
+      alert(JSON.stringify(res.data))
+      router.push('/dashboard')
 
-      }).then((result) => {
-
-        alert(JSON.stringify(result))
-        router.push('/dashboard')
-      })
     } catch (e) {
       const error = e as AxiosError
-      alert (error.message)
+      alert(error.message)
     }
-  }
-
-  if (isSuccess === true) { 
-    return <div>user already authenticated</div>
   }
 
   return (
@@ -54,7 +46,7 @@ export default function Home() {
           </div>
           <div>
             <label htmlFor="password">password: </label>
-            <input type="password" id="password" name="password" className="border rounded border-black"/>
+            <input type="text" id="password" name="password" className="border rounded border-black"/>
           </div>
           <button type="submit" className="p-2 bg-orange-600 text-white w-fit rounded">
             Submit

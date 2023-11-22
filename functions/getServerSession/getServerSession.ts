@@ -1,25 +1,27 @@
-import api from "@/services/api"
-import { UserResponse } from "@/types/UserResponse"
-import { AxiosError } from "axios"
-import { cookies } from "next/headers"
+import api from "@/services/api";
+import { AxiosError } from "axios";
+import cookieStore from "@/hooks/getCookies";
 
 
-export async function getServerSession(): Promise<UserResponse> {
+export async function getServerSession() {
 
-  const cookieStore = cookies().getAll().map((cookie) => {
-    let string = ''
-    string  += `${cookie.name}=${cookie.value}`
-    return string
-  })
+  const cookies = cookieStore()
 
   try {
-    const response = await api.get('/auth/session', { headers: { Cookie: cookieStore }})
-    return {      
-      user: response.data,
+    const res = await api.get('/auth/session', {
+      headers: {
+        Cookie: `${cookies}`
+      }
+    })
+
+    return {
+      user: res.data,
       error: null,
     }
+
   } catch (e) {
     const error = e as AxiosError
+
     return {
       user: null,
       error

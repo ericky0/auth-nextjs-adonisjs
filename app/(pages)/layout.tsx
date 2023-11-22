@@ -13,14 +13,10 @@ const DashboardLayout = ({  children }: { children: React.ReactNode }) => {
   useEffect(() => {
     (async () => {
       const { error } = await getClientSession()
-
-      console.log(error?.message)
-
       if (error) {
         router.push('/')
         return
       }
-      
     })()
   }, [router])
 
